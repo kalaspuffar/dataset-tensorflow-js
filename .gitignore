@@ -1,4 +1,11 @@
 target/
+*.jpg
+*.tfrecords
+*.iml
+*.h5
+.idea
+PetImages/
+tensorjs/
 pom.xml.tag
 pom.xml.releaseBackup
 pom.xml.versionsBackup
