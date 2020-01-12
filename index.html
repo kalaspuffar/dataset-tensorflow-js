@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest"> </script>
+    <style>
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div>
+            <img id="cat1" src="cat1.jpg" width="300" height="300" />
+            <div id="cat1_pred">WORKING</div>        
+        </div>
+        <div>
+            <img id="cat2" src="cat2.jpg" width="300" height="300" />
+            <div id="cat2_pred">WORKING</div>        
+        </div>
+        <div>
+            <img id="cat3" src="cat3.jpg" width="300" height="300" />
+            <div id="cat3_pred">WORKING</div>                    
+        </div>
+        <div>
+            <img id="dog1" src="dog1.jpg" width="300" height="300" />
+            <div id="dog1_pred">WORKING</div>                    
+        </div>
+        <div>
+            <img id="dog2" src="dog2.jpg" width="300" height="300" />
+            <div id="dog2_pred">WORKING</div>                    
+        </div>
+        <div>
+            <img id="dog3" src="dog3.jpg" width="300" height="300" />
+            <div id="dog3_pred">WORKING</div>                    
+        </div>
+    </div>
+
+    <script>
+        async function predict() {
+            const model = await tf.loadLayersModel('http://localhost:8000/tensorjs/model.json');
+
+            var names = ['cat1', 'cat2', 'cat3', 'dog1', 'dog2', 'dog3'];
+            for(var i = 0; i < names.length; i++) {
+                var imageName = names[i];
+
+                var example = tf.browser.fromPixels(document.getElementById(imageName));  // for example
+                example = example.reshape([1, 300, 300, 3]);
+                const output = model.predict(example);
+
+                const axis = 1;
+                const predictions = Array.from(output.argMax(axis).dataSync());
+                console.log(predictions);
+
+                if (predictions[0] == 1) {
+                    document.getElementById(imageName + '_pred').innerHTML = 'CAT!';
+                } else if (predictions[0] == 2) {
+                    document.getElementById(imageName + '_pred').innerHTML = 'DOG!';
+                } else {
+                    document.getElementById(imageName + '_pred').innerHTML = 'Don\'t know I got ' + predictions[0];
+                }
+
+            }
+        }
+
+        setTimeout(function() {
+            predict();
+        }, 1000);
+    </script>
+
+</body>
+</html>
